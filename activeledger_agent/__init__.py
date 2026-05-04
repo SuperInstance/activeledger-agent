@@ -7,12 +7,14 @@ Every transaction logged to PLATO as a functional tile.
 
 import time
 import requests
+from fleet_agent import BaseAgent
+from fleet_agent.fleet_math import EmergenceDetector, HolonomyConsensus
+
 from typing import Optional, List, Dict, Any
 from dataclasses import dataclass
 
 DEFAULT_PLATO_URL = "http://localhost:8847"
 ROOM = "activeledger-ai"
-
 
 @dataclass
 class LedgerEntry:
@@ -23,7 +25,6 @@ class LedgerEntry:
     description: str
     timestamp: float
 
-
 class ActiveLedgerAgent:
     """
     Activity/investment ledger agent.
@@ -32,11 +33,25 @@ class ActiveLedgerAgent:
     Tracks resource flow over time through vessel accumulation.
     """
     
-    def __init__(self, ledger_id: str = "default", plato_url: str = DEFAULT_PLATO_URL):
-        self.ledger_id = ledger_id
-        self.plato_url = plato_url.rstrip("/")
-        self.room = ROOM
-    
+        
+    def detect_emergence(self, events: list) -> dict:
+        """Detect emergence via H1 cohomology."""
+        detector = EmergenceDetector()
+        edges = [(events[i], events[i+1]) for i in range(len(events)-1)]
+        detector.update(events, edges)
+        return {"emergence_detected": detector.emergence_detected, "h1_cohomology": detector.h1, "confidence": detector.confidence}
+
+    def check_consensus(self, tile_ids: list[int]) -> bool:
+        """Check holonomy consensus across tiles."""
+        hc = HolonomyConsensus()
+        for tid in tile_ids:
+            hc.add_tile(tid)
+        return hc.check_consensus([tile_ids])
+
+def __init__(self, vessel: str = "activeledger-agent", domain: str = ACTIVELEDGER_AI_ROOM, plato_url: str = "http://localhost:8847"):
+        super().__init__(vessel=vessel, domain=domain, plato_url=plato_url)
+        self.room = domain
+
     def _write(self, entry_type: str, data: Dict[str, Any]) -> bool:
         tile = {
             "question": f"ledger:{entry_type}",
