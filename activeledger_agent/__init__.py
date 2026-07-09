@@ -25,7 +25,7 @@ class LedgerEntry:
     description: str
     timestamp: float
 
-class ActiveLedgerAgent:
+class ActiveLedgerAgent(BaseAgent):
     """
     Activity/investment ledger agent.
     
@@ -48,9 +48,10 @@ class ActiveLedgerAgent:
             hc.add_tile(tid)
         return hc.check_consensus([tile_ids])
 
-def __init__(self, vessel: str = "activeledger-agent", domain: str = ACTIVELEDGER_AI_ROOM, plato_url: str = "http://localhost:8847"):
+    def __init__(self, vessel: str = "activeledger-agent", domain: str = ROOM, plato_url: str = "http://localhost:8847"):
         super().__init__(vessel=vessel, domain=domain, plato_url=plato_url)
         self.room = domain
+        self.ledger_id = vessel
 
     def _write(self, entry_type: str, data: Dict[str, Any]) -> bool:
         tile = {
@@ -107,3 +108,7 @@ def __init__(self, vessel: str = "activeledger-agent", domain: str = ACTIVELEDGE
         except:
             pass
         return "Ledger system unavailable."
+
+
+# Alias for test/import compatibility (matches the package's lowercase spelling).
+ActiveledgerAgent = ActiveLedgerAgent
