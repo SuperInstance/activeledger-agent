@@ -1,6 +1,14 @@
 # activeledger-agent
 
-A Python client that writes activity, investment, and trade entries to a [PLATO](https://github.com/SuperInstance) tile server and queries them back. Built on the `fleet-agent` base class.
+Activity / investment / trade ledger agent that writes entries to a PLATO tile
+server and queries them back. Built on the `fleet-agent` base class.
+
+PLATO is the SuperInstance sketchbook's shared tile-server memory: a **room**
+is a named collection on the server, a **tile** is one JSON record in it. This
+package is a client only — it does not ship or run PLATO itself. Sibling
+clients of the same protocol:
+[fishinglog-agent](https://github.com/SuperInstance/fishinglog-agent),
+[reallog-agent](https://github.com/SuperInstance/reallog-agent).
 
 ## Status
 
