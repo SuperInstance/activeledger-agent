@@ -13,7 +13,7 @@ jobs:
       - name: Check for broken links in README
         run: |
           if [ -f README.md ]; then
-            grep -n "http" README.md | grep -v "https://github.com" | head -20 || true
+            grep -n "http" README.md | grep -v "https://github.com" | head -20
           fi
       - name: Verify repo has description-worthy README
         run: |
